@@ -16,6 +16,7 @@
  */
 package com.pwolfgang.svggraphics2d;
 
+import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Composite;
 import java.awt.Font;
@@ -39,29 +40,62 @@ import java.awt.image.RenderedImage;
 import java.awt.image.renderable.RenderableImage;
 import java.text.AttributedCharacterIterator;
 import java.util.Map;
+import java.awt.geom.PathIterator;
+import java.util.StringJoiner;
 
 /**
  * This class is a minimal implementation of the Graphics2D class that produces
- * a SVG Document.
+ * a SVG Document. This class only supports the following methods:
+ * <ul>
+ * <li>draw</li>
+ * <li>fill</li>
+ * <li>drawGlyphVector</li>
+ * <li>setColor</li>
+ * <li>getColor</li>
+ * <li>setFont</li>
+ * <li>getFont</li>
+ * </ul>
  * @author Paul
  */
 public class SVGGraphics2D extends Graphics2D {
+    
+    private Font font;
+    private final Canvas c = new Canvas();
+    private Color color;
     
     /**
      * The XML Document to be generated.
      */
     private final StringBuilder stb = new StringBuilder();
     
-    public SVGGraphics2D() {}
+    public SVGGraphics2D() {
+        stb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+        stb.append("<!DOCTYPE svg PUBLIC '-//W3C//DTD SVG 1.0//EN'\n" +
+"          'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>\n");
+        stb.append("<svg>\n");
+        stb.append("<g>\n");
+        color = Color.BLACK;
+
+    }
+    
+    public void close() {
+        stb.append("</g>\n");
+        stb.append("</svg>\n");
+    }
     
     @Override
     public String toString() {
         return stb.toString();
     }
+    
+    private String getColorString() {
+        return String.format("#%02x%02x%02x", 
+                color.getRed(), color.getGreen(), color.getBlue());
+    }
 
     @Override
     public void draw(Shape arg0) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        drawOrFillPath(arg0, "none", getColorString());
     }
 
     @Override
@@ -105,13 +139,47 @@ public class SVGGraphics2D extends Graphics2D {
     }
 
     @Override
-    public void drawGlyphVector(GlyphVector arg0, float arg1, float arg2) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void drawGlyphVector(GlyphVector g, float x, float y) {
+        Shape outline = g.getOutline(x, y);
+        fill(outline);
     }
 
     @Override
     public void fill(Shape arg0) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        drawOrFillPath(arg0, getColorString(), "none"); 
+    }
+
+    private void drawOrFillPath(Shape arg0, String fill, String stroke) {
+        stb.append(String.format("<path style=\"stroke:%s; fill:%s\"%nd=\"", stroke, fill));
+        StringJoiner sj = new StringJoiner(", ");
+        PathIterator pathIterator = arg0.getPathIterator(null);
+        float[] coords = new float[6];
+        while (!pathIterator.isDone()) {
+            int segType = pathIterator.currentSegment(coords);
+            switch (segType) {
+                case PathIterator.SEG_MOVETO:
+                    sj.add(String.format("M %f %f", coords[0], coords[1]));
+                    break;
+                case PathIterator.SEG_LINETO:
+                    sj.add(String.format("L %f %f", coords[0], coords[1]));
+                    break;
+                case PathIterator.SEG_CUBICTO:
+                    sj.add(String.format("C %f %f %f %f %f %f",
+                            coords[0], coords[1], coords[2], coords[3],
+                            coords[4], coords[5]));
+                    break;
+                case PathIterator.SEG_QUADTO:
+                    sj.add(String.format("Q %f %f %f %f%n",
+                            coords[0], coords[1], coords[2], coords[3]));
+                    break;
+                case PathIterator.SEG_CLOSE:
+                    sj.add("Z");
+                    break;
+            }
+            pathIterator.next();
+        }
+        stb.append(sj.toString());
+        stb.append("\"/>\n");
     }
 
     @Override
@@ -241,7 +309,7 @@ public class SVGGraphics2D extends Graphics2D {
 
     @Override
     public FontRenderContext getFontRenderContext() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return c.getFontMetrics(font).getFontRenderContext();
     }
 
     @Override
@@ -251,12 +319,12 @@ public class SVGGraphics2D extends Graphics2D {
 
     @Override
     public Color getColor() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return color;
     }
 
     @Override
     public void setColor(Color arg0) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        color = arg0;
     }
 
     @Override
@@ -271,17 +339,17 @@ public class SVGGraphics2D extends Graphics2D {
 
     @Override
     public Font getFont() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return font;
     }
 
     @Override
     public void setFont(Font arg0) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        font = arg0;
     }
 
     @Override
     public FontMetrics getFontMetrics(Font arg0) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return c.getFontMetrics(arg0);
     }
 
     @Override
