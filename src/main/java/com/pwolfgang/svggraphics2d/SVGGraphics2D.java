@@ -16,6 +16,13 @@
  */
 package com.pwolfgang.svggraphics2d;
 
+import java.awt.BasicStroke;
+import static java.awt.BasicStroke.CAP_BUTT;
+import static java.awt.BasicStroke.CAP_ROUND;
+import static java.awt.BasicStroke.CAP_SQUARE;
+import static java.awt.BasicStroke.JOIN_BEVEL;
+import static java.awt.BasicStroke.JOIN_MITER;
+import static java.awt.BasicStroke.JOIN_ROUND;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Composite;
@@ -32,6 +39,7 @@ import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
+import java.awt.font.TextLayout;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.awt.image.BufferedImageOp;
@@ -54,6 +62,8 @@ import java.util.StringJoiner;
  * <li>getColor</li>
  * <li>setFont</li>
  * <li>getFont</li>
+ * <li>getStroke</li>
+ * <li>setStroke</li>
  * </ul>
  * @author Paul
  */
@@ -62,6 +72,7 @@ public class SVGGraphics2D extends Graphics2D {
     private Font font;
     private final Canvas c = new Canvas();
     private Color color;
+    private BasicStroke stroke;
     
     /**
      * The XML Document to be generated.
@@ -75,6 +86,8 @@ public class SVGGraphics2D extends Graphics2D {
         stb.append("<svg>\n");
         stb.append("<g>\n");
         color = Color.BLACK;
+        stroke = new BasicStroke();
+        font = new Font("Dialog", Font.PLAIN, 12);
 
     }
     
@@ -92,10 +105,59 @@ public class SVGGraphics2D extends Graphics2D {
         return String.format("#%02x%02x%02x", 
                 color.getRed(), color.getGreen(), color.getBlue());
     }
+    
+    private String getStrokeString() {
+        String strokeColor = String.format("stroke:%s;", getColorString());
+        String strokeWidth = String.format("stroke-width:%.1f;", stroke.getLineWidth());
+        String dasharray = getDashArray();
+        String lineCap = getLineCap();
+        String lineJoin = getLineJoin();
+        String miterLimit = String.format("stroke-miterlimit:%.1f;", stroke.getMiterLimit());
+        return String.format("%s %s %s %s %s %s", strokeColor, strokeWidth, 
+                dasharray, lineCap, lineJoin, miterLimit);
+    }
+    
+    private String getDashArray() {
+        float[] dashArray = stroke.getDashArray();
+        if (dashArray == null || dashArray.length == 0) {
+            return "";
+        }
+        StringJoiner sj = new StringJoiner(", ");
+        for (float f : dashArray) {
+            sj.add(String.format("%.1f", f));
+        }
+        return String.format("string-dasharray:%s;", sj.toString());
+    }
+    
+    private String getLineCap() {
+        int lineCap = stroke.getEndCap();
+        switch (lineCap) {
+            case CAP_BUTT:
+                return "stroke-endcap:butt;";
+            case CAP_ROUND:
+                return "stroke_endcap:round;";
+            case CAP_SQUARE:
+                return "stroke_endcap:square;";
+        }
+        return "";
+    }
+    
+    private String getLineJoin() {
+        int lineJoin = stroke.getLineJoin();
+        switch (lineJoin) {
+            case JOIN_BEVEL:
+                return "stroke-linejoin:bevel;";
+            case JOIN_MITER:
+                return "stroke-linejoin:miter;";
+            case JOIN_ROUND:
+                return "stroke-linejoin:round;";
+        }
+        return "";
+    }
 
     @Override
     public void draw(Shape arg0) {
-        drawOrFillPath(arg0, "none", getColorString());
+        drawOrFillPath(arg0, "none", getStrokeString());
     }
 
     @Override
@@ -119,23 +181,27 @@ public class SVGGraphics2D extends Graphics2D {
     }
 
     @Override
-    public void drawString(String arg0, int arg1, int arg2) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void drawString(String s, int x, int y) {
+        drawString(s, (float)x, (float)y);
     }
 
     @Override
-    public void drawString(String arg0, float arg1, float arg2) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void drawString(String s, float x, float y) {
+        var frc = getFontRenderContext();
+        var textLayout = new TextLayout(s, font, frc);
+        textLayout.draw(this, x, y);      
     }
 
     @Override
-    public void drawString(AttributedCharacterIterator arg0, int arg1, int arg2) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void drawString(AttributedCharacterIterator arg0, int x, int y) {
+        drawString(arg0, (float)x, (float)y);
     }
 
     @Override
-    public void drawString(AttributedCharacterIterator arg0, float arg1, float arg2) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void drawString(AttributedCharacterIterator arg0, float x, float y) {
+        var frc = getFontRenderContext();
+        var textLayout = new TextLayout(arg0, frc);
+        textLayout.draw(this, x, y);
     }
 
     @Override
@@ -146,11 +212,11 @@ public class SVGGraphics2D extends Graphics2D {
 
     @Override
     public void fill(Shape arg0) {
-        drawOrFillPath(arg0, getColorString(), "none"); 
+        drawOrFillPath(arg0, getColorString(), "stroke:none;"); 
     }
 
     private void drawOrFillPath(Shape arg0, String fill, String stroke) {
-        stb.append(String.format("<path style=\"stroke:%s; fill:%s\"%nd=\"", stroke, fill));
+        stb.append(String.format("<path style=\"%s fill:%s\"%nd=\"", stroke, fill));
         StringJoiner sj = new StringJoiner(", ");
         PathIterator pathIterator = arg0.getPathIterator(null);
         float[] coords = new float[6];
@@ -204,7 +270,11 @@ public class SVGGraphics2D extends Graphics2D {
 
     @Override
     public void setStroke(Stroke arg0) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (arg0 instanceof BasicStroke) {
+            this.stroke = (BasicStroke)arg0;
+        } else {
+            throw new RuntimeException(arg0.getClass().getSimpleName() + " not supported");
+        }
     }
 
     @Override
@@ -299,7 +369,7 @@ public class SVGGraphics2D extends Graphics2D {
 
     @Override
     public Stroke getStroke() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return stroke;
     }
 
     @Override
