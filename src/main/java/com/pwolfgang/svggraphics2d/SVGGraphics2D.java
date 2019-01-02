@@ -58,6 +58,7 @@ import java.util.StringJoiner;
  * <li>draw</li>
  * <li>fill</li>
  * <li>drawGlyphVector</li>
+ * <li>drawString</li>
  * <li>setColor</li>
  * <li>getColor</li>
  * <li>setFont</li>
@@ -70,7 +71,7 @@ import java.util.StringJoiner;
 public class SVGGraphics2D extends Graphics2D {
     
     private Font font;
-    private final Canvas c = new Canvas();
+    private final Canvas canvas = new Canvas();
     private Color color;
     private BasicStroke stroke;
     
@@ -379,7 +380,7 @@ public class SVGGraphics2D extends Graphics2D {
 
     @Override
     public FontRenderContext getFontRenderContext() {
-        return c.getFontMetrics(font).getFontRenderContext();
+        return canvas.getFontMetrics(font).getFontRenderContext();
     }
 
     @Override
@@ -419,7 +420,7 @@ public class SVGGraphics2D extends Graphics2D {
 
     @Override
     public FontMetrics getFontMetrics(Font arg0) {
-        return c.getFontMetrics(arg0);
+        return canvas.getFontMetrics(arg0);
     }
 
     @Override
