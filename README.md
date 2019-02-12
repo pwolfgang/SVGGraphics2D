@@ -1,6 +1,5 @@
 
-# Minimal implementation of the Graphics2D class that produces
-a SVG Document. 
+# Minimal implementation of the Graphics2D class that produces an SVG Document. 
 
 This class only supports the following methods:
 
