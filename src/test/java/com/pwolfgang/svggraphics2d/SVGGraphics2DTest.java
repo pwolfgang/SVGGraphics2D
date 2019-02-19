@@ -19,6 +19,7 @@ package com.pwolfgang.svggraphics2d;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import java.awt.geom.PathIterator;
+import java.awt.geom.Rectangle2D;
 
 /**
  *
@@ -29,116 +30,49 @@ public class SVGGraphics2DTest {
     public SVGGraphics2DTest() {
     }
 
-    /**
-     * Test of close method, of class SVGGraphics2D.
-     */
-    @Test
-    public void testClose() {
-    }
-
-    /**
-     * Test of toString method, of class SVGGraphics2D.
-     */
-    @Test
-    public void testToString() {
-    }
 
     /**
      * Test of draw method, of class SVGGraphics2D.
      */
     @Test
     public void testDraw() {
+        var graphics = new SVGGraphics2D();
+        var rect = new Rectangle2D.Double(1, 1, 3, 4);
+        graphics.draw(rect);
+        graphics.close();
+        String expected = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+"<!DOCTYPE svg PUBLIC '-//W3C//DTD SVG 1.0//EN'\n" +
+"          'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>\n" +
+"<svg>\n" +
+"<g>\n" +
+"<path style=\"stroke:#000000; stroke-width:1.0;  stroke_endcap:square; stroke-linejoin:miter; stroke-miterlimit:10.0; fill:none\"\n" +
+"d=\"M 1.000000 1.000000, L 4.000000 1.000000, L 4.000000 5.000000, L 1.000000 5.000000, L 1.000000 1.000000, Z\"/>\n" +
+"</g>\n" +
+"</svg>\n" +
+"";
+        assertEquals(expected, graphics.toString());
     }
-
-    /**
-     * Test of drawImage method, of class SVGGraphics2D.
-     */
-    @Test
-    public void testDrawImage_3args() {
-    }
-
-    /**
-     * Test of drawImage method, of class SVGGraphics2D.
-     */
-    @Test
-    public void testDrawImage_4args_1() {
-    }
-
-    /**
-     * Test of drawRenderedImage method, of class SVGGraphics2D.
-     */
-    @Test
-    public void testDrawRenderedImage() {
-    }
-
-    /**
-     * Test of drawRenderableImage method, of class SVGGraphics2D.
-     */
-    @Test
-    public void testDrawRenderableImage() {
-    }
-
-    /**
-     * Test of drawString method, of class SVGGraphics2D.
-     */
-    @Test
-    public void testDrawString_3args_1() {
-    }
-
-    /**
-     * Test of drawString method, of class SVGGraphics2D.
-     */
-    @Test
-    public void testDrawString_3args_2() {
-    }
-
-    /**
-     * Test of drawString method, of class SVGGraphics2D.
-     */
-    @Test
-    public void testDrawString_3args_3() {
-    }
-
-    /**
-     * Test of drawString method, of class SVGGraphics2D.
-     */
-    @Test
-    public void testDrawString_3args_4() {
-    }
-
-    /**
-     * Test of drawGlyphVector method, of class SVGGraphics2D.
-     */
-    @Test
-    public void testDrawGlyphVector() {
-    }
-
+    
     /**
      * Test of fill method, of class SVGGraphics2D.
      */
     @Test
     public void testFill() {
-    }
-
-    /**
-     * Test of hit method, of class SVGGraphics2D.
-     */
-    @Test
-    public void testHit() {
-    }
-
-    /**
-     * Test of getDeviceConfiguration method, of class SVGGraphics2D.
-     */
-    @Test
-    public void testGetDeviceConfiguration() {
-    }
-
-    /**
-     * Test of setComposite method, of class SVGGraphics2D.
-     */
-    @Test
-    public void testSetComposite() {
+        var graphics = new SVGGraphics2D();
+        var rect = new Rectangle2D.Double(1, 1, 3, 4);
+        graphics.fill(rect);
+        graphics.close();
+        String expected = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+"<!DOCTYPE svg PUBLIC '-//W3C//DTD SVG 1.0//EN'\n" +
+"          'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>\n" +
+"<svg>\n" +
+"<g>\n" +
+"<path style=\"stroke:none; fill:#000000\"\n" +
+"d=\"M 1.000000 1.000000, L 4.000000 1.000000, L 4.000000 5.000000, L 1.000000 5.000000, L 1.000000 1.000000, Z\"/>\n" +
+"</g>\n" +
+"</svg>\n" +
+"";
+        assertEquals(expected, graphics.toString());
     }
 
     /**
@@ -155,40 +89,7 @@ public class SVGGraphics2DTest {
     public void testSetStroke() {
     }
 
-    /**
-     * Test of setRenderingHint method, of class SVGGraphics2D.
-     */
-    @Test
-    public void testSetRenderingHint() {
-    }
 
-    /**
-     * Test of getRenderingHint method, of class SVGGraphics2D.
-     */
-    @Test
-    public void testGetRenderingHint() {
-    }
-
-    /**
-     * Test of setRenderingHints method, of class SVGGraphics2D.
-     */
-    @Test
-    public void testSetRenderingHints() {
-    }
-
-    /**
-     * Test of addRenderingHints method, of class SVGGraphics2D.
-     */
-    @Test
-    public void testAddRenderingHints() {
-    }
-
-    /**
-     * Test of getRenderingHints method, of class SVGGraphics2D.
-     */
-    @Test
-    public void testGetRenderingHints() {
-    }
 
     /**
      * Test of translate method, of class SVGGraphics2D.
@@ -261,13 +162,6 @@ public class SVGGraphics2DTest {
     }
 
     /**
-     * Test of getComposite method, of class SVGGraphics2D.
-     */
-    @Test
-    public void testGetComposite() {
-    }
-
-    /**
      * Test of setBackground method, of class SVGGraphics2D.
      */
     @Test
@@ -286,13 +180,6 @@ public class SVGGraphics2DTest {
      */
     @Test
     public void testGetStroke() {
-    }
-
-    /**
-     * Test of clip method, of class SVGGraphics2D.
-     */
-    @Test
-    public void testClip() {
     }
 
     /**
@@ -356,48 +243,6 @@ public class SVGGraphics2DTest {
      */
     @Test
     public void testGetFontMetrics() {
-    }
-
-    /**
-     * Test of getClipBounds method, of class SVGGraphics2D.
-     */
-    @Test
-    public void testGetClipBounds() {
-    }
-
-    /**
-     * Test of clipRect method, of class SVGGraphics2D.
-     */
-    @Test
-    public void testClipRect() {
-    }
-
-    /**
-     * Test of setClip method, of class SVGGraphics2D.
-     */
-    @Test
-    public void testSetClip_4args() {
-    }
-
-    /**
-     * Test of getClip method, of class SVGGraphics2D.
-     */
-    @Test
-    public void testGetClip() {
-    }
-
-    /**
-     * Test of setClip method, of class SVGGraphics2D.
-     */
-    @Test
-    public void testSetClip_Shape() {
-    }
-
-    /**
-     * Test of copyArea method, of class SVGGraphics2D.
-     */
-    @Test
-    public void testCopyArea() {
     }
 
     /**
@@ -482,55 +327,6 @@ public class SVGGraphics2DTest {
      */
     @Test
     public void testFillPolygon() {
-    }
-
-    /**
-     * Test of drawImage method, of class SVGGraphics2D.
-     */
-    @Test
-    public void testDrawImage_4args_2() {
-    }
-
-    /**
-     * Test of drawImage method, of class SVGGraphics2D.
-     */
-    @Test
-    public void testDrawImage_6args() {
-    }
-
-    /**
-     * Test of drawImage method, of class SVGGraphics2D.
-     */
-    @Test
-    public void testDrawImage_5args() {
-    }
-
-    /**
-     * Test of drawImage method, of class SVGGraphics2D.
-     */
-    @Test
-    public void testDrawImage_7args() {
-    }
-
-    /**
-     * Test of drawImage method, of class SVGGraphics2D.
-     */
-    @Test
-    public void testDrawImage_10args() {
-    }
-
-    /**
-     * Test of drawImage method, of class SVGGraphics2D.
-     */
-    @Test
-    public void testDrawImage_11args() {
-    }
-
-    /**
-     * Test of dispose method, of class SVGGraphics2D.
-     */
-    @Test
-    public void testDispose() {
     }
     
     @Test

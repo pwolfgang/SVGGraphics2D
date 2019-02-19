@@ -345,7 +345,7 @@ public class SVGGraphics2D extends Graphics2D implements Closeable {
      * @param stroke The stroke attributes for to draw the shape.
      */
     private void drawOrFillPath(PathIterator pathIterator, String fill, String stroke) {
-        stb.append(String.format("<path style=\"%s fill:%s\"%nd=\"", stroke, fill));
+        stb.append(String.format("<path style=\"%s fill:%s\"\nd=\"", stroke, fill));
         StringJoiner sj = new StringJoiner(", ");
         float[] coords = new float[6];
         while (!pathIterator.isDone()) {
