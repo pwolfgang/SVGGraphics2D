@@ -556,7 +556,6 @@ public class SVGGraphics2DTest {
         while (!itr.isDone()) {
             double[] coords = new double[6];
             int retvalue = itr.currentSegment(coords);
-            System.out.printf("%d %d %.1f %.1f%n", count, retvalue, coords[0], coords[1]);
             assertEquals(expected[count], retvalue);
             assertEquals(expectedCoords[count][0], coords[0], 1e-9);
             itr.next();
@@ -590,7 +589,6 @@ public class SVGGraphics2DTest {
         while (!itr.isDone()) {
             double[] coords = new double[6];
             int retvalue = itr.currentSegment(coords);
-            System.out.printf("%d %d %.1f %.1f%n", count, retvalue, coords[0], coords[1]);
             assertEquals(expected[count], retvalue);
             assertEquals(expectedCoords[count][0], coords[0], 1e-9);
             itr.next();
@@ -624,7 +622,6 @@ public class SVGGraphics2DTest {
         while (!itr.isDone()) {
             double[] coords = new double[6];
             int retvalue = itr.currentSegment(coords);
-            System.out.printf("%d %d %.1f %.1f%n", count, retvalue, coords[0], coords[1]);
             assertEquals(expected[count], retvalue);
             assertEquals(expectedCoords[count][0], coords[0], 1e-9);
             itr.next();
