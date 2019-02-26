@@ -823,6 +823,18 @@ public class SVGGraphics2D extends Graphics2D implements Closeable {
     }
 
     /**
+     * Draw a rectangle.
+     * @param x0 The x-coordinate of the origin.
+     * @param y0 The y-coordinate of the origin.
+     * @param w The width of the rectangle
+     * @param h The height of the rectangle
+     */
+    @Override
+    public void drawRect(int x0, int y0, int w, int h) {
+        draw(new Rectangle2D.Double(x0, y0, w, h));
+    }
+
+    /**
      * Fill a rectangle.
      * @param x0 The x-coordinate of the origin.
      * @param y0 The y-coordinate of the origin.
