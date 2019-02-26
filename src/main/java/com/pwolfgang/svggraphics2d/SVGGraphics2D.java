@@ -345,7 +345,8 @@ public class SVGGraphics2D extends Graphics2D implements Closeable {
      * @param stroke The stroke attributes for to draw the shape.
      */
     private void drawOrFillPath(PathIterator pathIterator, String fill, String stroke) {
-        stb.append(String.format("<path style=\"%s fill:%s\"\nd=\"", stroke, fill));
+        stb.append(String.format("<path style=\"%s fill:%s\"\n%sd=\"", 
+                stroke, fill, getTransformAttribute()));
         StringJoiner sj = new StringJoiner(", ");
         float[] coords = new float[6];
         while (!pathIterator.isDone()) {
@@ -580,6 +581,23 @@ public class SVGGraphics2D extends Graphics2D implements Closeable {
     @Override
     public AffineTransform getTransform() {
         return transform;
+    }
+    
+    /**
+     * Generate the transform attribute.
+     */
+    private String getTransformAttribute() {
+        if (transform.isIdentity()) {
+            return "";
+        }
+        StringJoiner sj = new StringJoiner(" ", "(", ")");
+        double[] matrix = new double[6];
+        transform.getMatrix(matrix);
+        for (double d : matrix) {
+            sj.add(String.format("%.6f", d));
+        }
+        
+        return "transform=\"matrix" + sj.toString() + "\"\n";
     }
 
     /**

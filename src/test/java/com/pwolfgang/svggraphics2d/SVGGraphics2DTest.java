@@ -76,6 +76,30 @@ public class SVGGraphics2DTest {
     }
 
     /**
+     * Test of fill method, of class SVGGraphics2D.
+     */
+    @Test
+    public void testUseTransform() {
+        var graphics = new SVGGraphics2D();
+        graphics.translate(10, 5);
+        var rect = new Rectangle2D.Double(1, 1, 3, 4);
+        graphics.fill(rect);
+        graphics.close();
+        String expected = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+"<!DOCTYPE svg PUBLIC '-//W3C//DTD SVG 1.0//EN'\n" +
+"          'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>\n" +
+"<svg>\n" +
+"<g>\n" +
+"<path style=\"stroke:none; fill:#000000\"\n" +
+"transform=\"matrix(1.000000 0.000000 0.000000 1.000000 10.000000 5.000000)\"\n" +
+"d=\"M 1.000000 1.000000, L 4.000000 1.000000, L 4.000000 5.000000, L 1.000000 5.000000, L 1.000000 1.000000, Z\"/>\n" +
+"</g>\n" +
+"</svg>\n" +
+"";
+        assertEquals(expected, graphics.toString());
+    }
+
+    /**
      * Test of setPaint method, of class SVGGraphics2D.
      */
     @Test
