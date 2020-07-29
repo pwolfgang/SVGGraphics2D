@@ -82,6 +82,7 @@ public class SVGGraphics2D extends Graphics2D implements Closeable {
     private Color color;
     private BasicStroke stroke;
     private AffineTransform transform;
+    private Shape clip;
     
     /**
      * The XML Document to be generated.
@@ -104,6 +105,22 @@ public class SVGGraphics2D extends Graphics2D implements Closeable {
         stroke = new BasicStroke();
         font = new Font("Dialog", Font.PLAIN, 12);
         transform = new AffineTransform();
+    }
+    
+    /**
+     * Construct a copy of this SVGGraphics2D object.
+     */
+    private SVGGraphics2D(SVGGraphics2D g) {
+        stb = new StringBuilder();
+        stb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+        stb.append("<!DOCTYPE svg PUBLIC '-//W3C//DTD SVG 1.0//EN'\n" +
+"          'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>\n");
+        stb.append("<svg>\n");
+        stb.append("<g>\n");
+        color = g.color;
+        stroke = g.stroke;
+        font = g.font;
+        transform = g.transform; 
     }
     
     /**
@@ -672,11 +689,10 @@ public class SVGGraphics2D extends Graphics2D implements Closeable {
     /**
      * Creates a new Graphics object that is a copy of this Graphics object.
      * @return A copy of this Graphics object.
-     * @throws UnsupportedOperationException.
      */
     @Override
     public Graphics create() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return new SVGGraphics2D(this);
     }
 
     /**
@@ -745,12 +761,15 @@ public class SVGGraphics2D extends Graphics2D implements Closeable {
 
     /**
      * Returns the bounding rectangle of the current clipping area.
-     * @return 
-     * @throws UnsupportedOperationException.
+     * @return
      */
     @Override
     public Rectangle getClipBounds() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        if (clip != null) {
+            return clip.getBounds();
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -768,31 +787,27 @@ public class SVGGraphics2D extends Graphics2D implements Closeable {
      * @param arg1
      * @param arg2
      * @param arg3
-     * @throws UnsupportedOperationException.
      */
     @Override
     public void setClip(int arg0, int arg1, int arg2, int arg3) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        clip = new Rectangle(arg0, arg1, arg2, arg3);
     }
 
     /**
      * Returns the current clipping area.
-     * @return 
-     * @throws UnsupportedOperationException.
+     * @return
      */
     @Override
     public Shape getClip() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return clip;
     }
 
     /**
      * Sets the current clipping area to an arbitrary clip shape.
-     * @param arg0
-     * @throws UnsupportedOperationException.
      */
     @Override
-    public void setClip(Shape arg0) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public void setClip(Shape clip) {
+        this.clip = clip;
     }
 
     /**
@@ -1011,7 +1026,7 @@ public class SVGGraphics2D extends Graphics2D implements Closeable {
 
     @Override
     public void dispose() {
-        throw new UnsupportedOperationException("Not supported yet."); 
+        // do nothing
     }
     
     public static class Path implements PathIterator {
